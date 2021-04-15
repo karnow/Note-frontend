@@ -40,9 +40,20 @@ class Notes extends React.Component {
             }
         ]
     }
+    componentDidMount() {
+        this.deleteNote('123');
+    }
+    deleteNote(id) {
+        const notes = this.state.notes;
+        const newNotes = notes.filter(note => note.id !== id);
+        this.setState({
+            notes: newNotes
+        });
+    }
     
     render() {
         
+        console.log("stan:", this.state.notes);
         
         return (
             <div>
