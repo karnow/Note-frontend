@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-function Note({ title, body, onDelete }) {
+function Note({id, title, body, onDelete, onEdit }) {
     
     const [showDesc, setShowDesc] = useState(false);
 
@@ -12,7 +12,7 @@ function Note({ title, body, onDelete }) {
         <div className="note">
                     <p onClick={toggleDesc}>{title}</p>
                     {showDesc ? (<div className="description">{body}</div>): (null)}
-                    <button>edytuj</button>
+                    <button onClick={onEdit}> edytuj</button>
                     <button className="delete" onClick={onDelete}>usuń</button>
         </div>
     )

@@ -1,6 +1,8 @@
 import React from "react";
 import Note from './Note';
 import NewNote from './NewNote';
+import Modal from 'react-modal';
+import EditNote from "./EditNote";
 class Notes extends React.Component {
     // constructor(props) {
     //     super(props);
@@ -29,7 +31,10 @@ class Notes extends React.Component {
                 title: 'Posprzątać mieszkanie',
                 body: 'zetrzeć kurze, umyć podłodę'
             }
-        ]
+        ],
+        showEditModal: false,
+        editNote: {}
+
     }
     componentDidMount() {
     //     this.deleteNote('123');
@@ -53,16 +58,45 @@ class Notes extends React.Component {
         });
         
     }
-    
+    editNote(note) {
+        const notes = this.state.notes;
+        const index = notes.findIndex(ele => ele.id === note.id);
+        if (index >= 0) {
+            notes[index] = note;
+            this.setState({
+            notes: notes
+        });
+    }
+    this.toggleModal();
+    }
+    editNoteHandler(note) {
+        this.toggleModal();
+        this.setState({ editNote: note });
+        
+
+    }
+    toggleModal() {
+        this.setState({ showEditModal: !this.state.showEditModal });
+    }
+
+        
     render() {
         
         console.log("stan:", this.state.notes);
+        console.log("stan editNote:", this.state.editNote);
         
         return (
             <div>
                 <p>My notes:</p>
-                <NewNote onAdd={(note)=>this.addNote(note)}/>
-                {this.state.notes.map((note) => <Note key={note.id} title={note.title} body={note.body} onDelete={()=>this.deleteNote(note.id)}/>)
+                <NewNote onAdd={(note) => this.addNote(note)} />
+                <Modal isOpen={this.state.showEditModal} contentLabel="Edytuj notatkę">
+                    <EditNote
+                        currentNote={this.state.editNote}
+                        onEdit={(note) => this.editNote(note)}
+                        closeModal={() => this.toggleModal()}
+                    />
+                </Modal>
+                {this.state.notes.map((note) => <Note key={note.id} title={note.title} body={note.body} onEdit={()=>this.editNoteHandler(note)} onDelete={()=>this.deleteNote(note.id)}/>)
                 }
                      
             </div>

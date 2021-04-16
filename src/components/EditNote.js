@@ -1,9 +1,11 @@
-import React, { useState } from "react";
+import React, {useState} from 'react';
 
-function NewNote({onAdd}) {
-    const [showForm, setShowForm] = useState(false);
-    const [title ,setTitle] = useState('');
-    const [desc ,setDesc] = useState('');
+function EditNote({ currentNote, onEdit, closeModal }) {
+    const { id, title: currentTitle, body: currentBody } = currentNote;
+    
+    
+ const [title ,setTitle] = useState(currentTitle);
+    const [desc ,setDesc] = useState(currentBody);
 
     const changeTitleHandler = event => {
         const value = event.target.value;
@@ -13,30 +15,26 @@ function NewNote({onAdd}) {
         const value = event.target.value;
         setDesc(value);
     }
-    const addNote = () => {
+    const editNote = () => {
         const note = {
             title: title,
-            body: desc
+            body: desc,
+            id: id
         }
-        onAdd(note);
-        setTitle('');
-        setDesc('');
-        setShowForm(false);
+        onEdit(note);
     }
-
     return (
-        showForm ? (
-            <div className="note">
+        <div className="note">
                 <label>Tytuł:</label>
                 <input type="text" value={title} onChange={changeTitleHandler} />
                 <br />
                 <label>Opis:</label>
                 <input type="text" value={desc} onChange={changeDescHandler} />
                 <br />
-                <button onClick={() => { addNote();  }}>Dodaj Notatkę</button>
+            <button onClick={() => editNote()}>Zapisz Notatkę</button>
+            <button onClick={closeModal}>Anuluj</button>
             </div>
-        ) : (<button onClick={()=> setShowForm(true)}>Nowa notatka</button>)
     );
 }
 
-export default NewNote;
+export default EditNote;
