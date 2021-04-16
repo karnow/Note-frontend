@@ -41,9 +41,10 @@ class Notes extends React.Component {
         ]
     }
     componentDidMount() {
-        this.deleteNote('123');
-    }
+    //     this.deleteNote('123');
+     }
     deleteNote(id) {
+        console.log(id)
         const notes = this.state.notes;
         const newNotes = notes.filter(note => note.id !== id);
         this.setState({
@@ -58,7 +59,7 @@ class Notes extends React.Component {
         return (
             <div>
                 <p>My notes:</p>
-                {this.state.notes.map((note) => <Note key={note.id} title={note.title} body={note.body} />)
+                {this.state.notes.map((note) => <Note key={note.id} title={note.title} body={note.body} onDelete={()=>this.deleteNote(note.id)}/>)
                 }
                      
             </div>
