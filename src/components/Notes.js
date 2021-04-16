@@ -1,5 +1,6 @@
 import React from "react";
 import Note from './Note';
+import NewNote from './NewNote';
 class Notes extends React.Component {
     // constructor(props) {
     //     super(props);
@@ -9,16 +10,6 @@ class Notes extends React.Component {
     //             title: 'Wykąpać psa',
     //             body: 'pamietaj aby wykąpać psa specjalnym szamponem'
     //         },
-    //         {
-    //             id: '456',
-    //             title: 'Zrobić zakupy',
-    //             body: 'kupić mleko, masło likier'
-    //         },
-    //         {
-    //             id: '788',
-    //             title: 'Posprzątać mieszkanie',
-    //             body: 'zetrzeć kurze, umyć podłodę'
-    //         }
     //     ]
     // }
     state = {
@@ -59,6 +50,7 @@ class Notes extends React.Component {
         return (
             <div>
                 <p>My notes:</p>
+                <NewNote />
                 {this.state.notes.map((note) => <Note key={note.id} title={note.title} body={note.body} onDelete={()=>this.deleteNote(note.id)}/>)
                 }
                      
