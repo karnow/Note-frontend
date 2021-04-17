@@ -3,6 +3,7 @@ import Note from './Note';
 import NewNote from './NewNote';
 import Modal from 'react-modal';
 import EditNote from "./EditNote";
+import axios from 'axios';
 class Notes extends React.Component {
     // constructor(props) {
     //     super(props);
@@ -15,57 +16,62 @@ class Notes extends React.Component {
     //     ]
     // }
     state = {
-        notes: [
-            {
-                id: '123',
-                title: 'Wykąpać psa',
-                body: 'pamietaj aby wykąpać psa specjalnym szamponem'
-            },
-            {
-                id: '456',
-                title: 'Zrobić zakupy',
-                body: 'kupić mleko, masło likier'
-            },
-            {
-                id: '788',
-                title: 'Posprzątać mieszkanie',
-                body: 'zetrzeć kurze, umyć podłodę'
-            }
-        ],
+        notes: [],
         showEditModal: false,
         editNote: {}
 
     }
     componentDidMount() {
+        this.fetchNotes();
     //     this.deleteNote('123');
-     }
-    deleteNote(id) {
-        console.log(id)
-        const notes = this.state.notes;
-        const newNotes = notes.filter(note => note.id !== id);
-        this.setState({
-            notes: newNotes
-        });
+    }
+    
+    async fetchNotes() {
+        const allNotes = await axios.get('http://localhost:3001/api/notes',)
+        console.log(allNotes);
+        const notes = allNotes.data;
+        this.setState({ notes:notes})
+
+    }
+    async deleteNote(id) {
+        console.log(id);
+        const res = await axios.delete('http://localhost:3001/api/notes/' + id);
+        console.log(res.status);
+        if (res.status === 204) {
+            this.fetchNotes()
+        }
+        // const newNotes = notes.filter(note => note._id !== id);
+        // this.setState({
+        //     notes: newNotes
+        // });
     }
 
-    addNote(note) {
-        console.log('notetka',note);
+    async addNote(note) {
+        console.log('notatka: ',note);
+        const res= await axios.post('http://localhost:3001/api/notes', note)
         const notes = this.state.notes;
-        notes.push(note);
+        const newNote = res.data;
+        notes.push(newNote);
         console.log(notes)
         this.setState({
             notes: notes
         });
         
     }
-    editNote(note) {
-        const notes = this.state.notes;
-        const index = notes.findIndex(ele => ele.id === note.id);
-        if (index >= 0) {
-            notes[index] = note;
-            this.setState({
-            notes: notes
-        });
+    async editNote(note) {
+        //edit backend
+        const res = await axios.put('http://localhost:3001/api/notes/' + note._id, note);
+        //edit frontend
+        if (res.status === 201) {
+            const notes = this.state.notes;
+            const index = notes.findIndex(ele => ele._id === note._id);
+            if (index >= 0) {
+                notes[index] = res.data;
+                this.setState({
+                notes: notes
+            });
+            
+        }
     }
     this.toggleModal();
     }
@@ -96,7 +102,7 @@ class Notes extends React.Component {
                         closeModal={() => this.toggleModal()}
                     />
                 </Modal>
-                {this.state.notes.map((note) => <Note key={note.id} title={note.title} body={note.body} onEdit={()=>this.editNoteHandler(note)} onDelete={()=>this.deleteNote(note.id)}/>)
+                {this.state.notes.map((note) => <Note key={note._id} title={note.title} body={note.body} onEdit={()=>this.editNoteHandler(note)} onDelete={()=>this.deleteNote(note._id)}/>)
                 }
                      
             </div>

@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 
 function EditNote({ currentNote, onEdit, closeModal }) {
-    const { id, title: currentTitle, body: currentBody } = currentNote;
+    const { _id, title: currentTitle, body: currentBody } = currentNote;
     
     
  const [title ,setTitle] = useState(currentTitle);
@@ -19,7 +19,7 @@ function EditNote({ currentNote, onEdit, closeModal }) {
         const note = {
             title: title,
             body: desc,
-            id: id
+            _id: _id
         }
         onEdit(note);
     }
