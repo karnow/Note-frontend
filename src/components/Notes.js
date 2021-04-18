@@ -3,7 +3,7 @@ import Note from './Note';
 import NewNote from './NewNote';
 import Modal from 'react-modal';
 import EditNote from "./EditNote";
-import axios from 'axios';
+import AxiosApiNote from './axiosApi';
 class Notes extends React.Component {
     // constructor(props) {
     //     super(props);
@@ -18,63 +18,82 @@ class Notes extends React.Component {
     state = {
         notes: [],
         showEditModal: false,
-        editNote: {}
+        editNote: {},
+        error:null
 
     }
     componentDidMount() {
-        this.fetchNotes();
-    //     this.deleteNote('123');
-    }
-    
-    async fetchNotes() {
-        const allNotes = await axios.get('http://localhost:3001/api/notes',)
-        console.log(allNotes);
-        const notes = allNotes.data;
-        this.setState({ notes:notes})
 
-    }
-    async deleteNote(id) {
-        console.log(id);
-        const res = await axios.delete('http://localhost:3001/api/notes/' + id);
-        console.log(res.status);
-        if (res.status === 204) {
-            this.fetchNotes()
-        }
-        // const newNotes = notes.filter(note => note._id !== id);
-        // this.setState({
-        //     notes: newNotes
-        // });
-    }
-
-    async addNote(note) {
-        console.log('notatka: ',note);
-        const res= await axios.post('http://localhost:3001/api/notes', note)
-        const notes = this.state.notes;
-        const newNote = res.data;
-        notes.push(newNote);
-        console.log(notes)
-        this.setState({
-            notes: notes
-        });
+        AxiosApiNote.getAllNotes()
+            .then(
+                (notes) => { console.log(notes); this.setState({ notes: notes }) })
         
+            .catch(
+                (error) => { Promise.reject(this.setState({ error })); console.log(error) })
+     
+    
     }
-    async editNote(note) {
-        //edit backend
-        const res = await axios.put('http://localhost:3001/api/notes/' + note._id, note);
-        //edit frontend
-        if (res.status === 201) {
-            const notes = this.state.notes;
-            const index = notes.findIndex(ele => ele._id === note._id);
-            if (index >= 0) {
-                notes[index] = res.data;
+    //old Api
+    // async fetchNotes() {
+    //     const allNotes = await axios.get('http://localhost:3001/api/notes',)
+    //     console.log(allNotes);
+    //     const notes = allNotes.data;
+    //     this.setState({ notes:notes})
+    // }
+
+    // async deleteNote(id) {
+    //     console.log(id);
+    //     const res = await axios.delete('http://localhost:3001/api/notes/' + id);
+    //     console.log(res.status);
+    //     if (res.status === 204) {
+    //        fetchNotes();
+    //     }
+    //     // const newNotes = notes.filter(note => note._id !== id);
+    //     // this.setState({
+    //     //     notes: newNotes
+    //     // });
+    // }
+
+    deleteNote(id) {
+        AxiosApiNote.deleteNote(id)
+            .then((result) => {
+                console.log(result);
+                const notes = this.state.notes;
+                const newNotes = notes.filter(note => note._id !== id);
+                this.setState({
+                    notes: newNotes
+                });
+            }).catch((e) => console.log('Błąd :', e));
+    }
+
+
+    addNote(note) {
+        AxiosApiNote.addNote(note)
+            .then((result) => {
+                const notes = this.state.notes;
+                notes.push(result);
                 this.setState({
                 notes: notes
-            });
-            
-        }
+                });
+            }).catch((e) => console.log('Błąd :', e));
     }
-    this.toggleModal();
+
+    editNote(note) {
+        AxiosApiNote.editNote(note)
+            .then((result) => {
+                const notes = this.state.notes;
+                const index = notes.findIndex(ele => ele._id === note._id);
+                if (index >= 0) {
+                    notes[index] = result;
+                    this.setState({
+                        notes: notes
+                    });
+                }
+            }).catch((e) => console.log('Błąd :', e));
+            this.toggleModal();
     }
+    
+
     editNoteHandler(note) {
         this.toggleModal();
         this.setState({ editNote: note });

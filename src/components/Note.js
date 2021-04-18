@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-function Note({id, title, body, onDelete, onEdit }) {
+function Note({title, body, onDelete, onEdit }) {
     
     const [showDesc, setShowDesc] = useState(false);
 
