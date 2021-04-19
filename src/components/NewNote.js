@@ -7,10 +7,13 @@ function NewNote({onAdd}) {
 
     const changeTitleHandler = event => {
         const value = event.target.value;
-        setTitle(value);
-    }
+       
+            setTitle(value);
+        }
+    
     const changeDescHandler = event => {
         const value = event.target.value;
+        
         setDesc(value);
     }
     const addNote = () => {

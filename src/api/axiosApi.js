@@ -15,15 +15,18 @@ const AxiosApiNote = {
     },
 
     addNote: async function (note) {
-        console.log('notatka: ', note);
-        const respons = await axios.post('/notes', note);
-        return respons.data;
+        
+            const res = await axios.post('/notes', note);
+            return res.data;
+        
     },
 
     editNote: async function (note) {
+       
+            const respons = await axios.put('/notes/' + note._id, note);
+            console.log(respons)
+            return respons.data;
         
-        const respons = await axios.put('/notes/' + note._id, note);
-        return respons.data;
        
     }
 }

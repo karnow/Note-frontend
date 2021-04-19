@@ -4,6 +4,8 @@ import NewNote from './NewNote';
 import Modal from 'react-modal';
 import EditNote from "./EditNote";
 import AxiosApiNote from '../api/axiosApi';
+import { NotificationContainer, NotificationManager } from 'react-notifications';
+import 'react-notifications/lib/notifications.css';
 class Notes extends React.Component {
     // constructor(props) {
     //     super(props);
@@ -26,13 +28,19 @@ class Notes extends React.Component {
 
         AxiosApiNote.getAllNotes()
             .then(
-                (notes) => { console.log(notes); this.setState({ notes: notes }) })
+                (notes) => {
+                    console.log(notes); this.setState({ notes: notes })
+                    NotificationManager.success('Notes downloaded ');
+                }
+           
+        )
         
             .catch(
-                (error) => { Promise.reject(this.setState({ error })); console.log(error) })
-     
-    
-    }
+                (error) => { Promise.reject(console.log(error)) })
+                
+                
+            }
+            // (error) => { Promise.reject(this.setState({ error })); console.log(error) })
     //old Api
     // async fetchNotes() {
     //     const allNotes = await axios.get('http://localhost:3001/api/notes',)
@@ -63,7 +71,10 @@ class Notes extends React.Component {
                 this.setState({
                     notes: newNotes
                 });
-            }).catch((e) => console.log('Błąd :', e));
+                NotificationManager.success('The note has been deleted');
+            }).catch((err) =>{
+            NotificationManager.error(err.response.data.message)
+             console.log('Błąd :', err) });
     }
 
 
@@ -75,7 +86,11 @@ class Notes extends React.Component {
                 this.setState({
                 notes: notes
                 });
-            }).catch((e) => console.log('Błąd :', e));
+                NotificationManager.success('Note added');
+            }).catch((err) => {
+                NotificationManager.error(err.response.data.message);
+                 console.log(err.response.data.message)   
+            });
     }
 
     editNote(note) {
@@ -89,10 +104,14 @@ class Notes extends React.Component {
                         notes: notes
                     });
                 }
-            }).catch((e) => console.log('Błąd :', e));
+                NotificationManager.success('Note changed');
+            }).catch(
+                (err) => {
+                     NotificationManager.error(err.response.data.message);
+                });
             this.toggleModal();
     }
-    
+
 
     editNoteHandler(note) {
         this.toggleModal();
@@ -112,6 +131,8 @@ class Notes extends React.Component {
         
         return (
             <div>
+                <NotificationContainer/>
+
                 <p>My notes:</p>
                 <NewNote onAdd={(note) => this.addNote(note)} />
                 <Modal isOpen={this.state.showEditModal} contentLabel="Edytuj notatkę">

@@ -9,10 +9,12 @@ function EditNote({ currentNote, onEdit, closeModal }) {
 
     const changeTitleHandler = event => {
         const value = event.target.value;
+        
         setTitle(value);
     }
     const changeDescHandler = event => {
         const value = event.target.value;
+        
         setDesc(value);
     }
     const editNote = () => {
