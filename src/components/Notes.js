@@ -3,7 +3,7 @@ import Note from './Note';
 import NewNote from './NewNote';
 import Modal from 'react-modal';
 import EditNote from "./EditNote";
-import AxiosApiNote from './axiosApi';
+import AxiosApiNote from '../api/axiosApi';
 class Notes extends React.Component {
     // constructor(props) {
     //     super(props);
